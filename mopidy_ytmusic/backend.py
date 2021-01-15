@@ -36,7 +36,7 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
         self.subscribed_artist_limit = config["ytmusic"]["subscribed_artist_limit"]
         self.history = config["ytmusic"]["enable_history"]
         self.liked_songs = config["ytmusic"]["enable_liked_songs"]
-        self.mood_genre = config["ytmusic"]["enable_liked_songs"]
+        self.mood_genre = config["ytmusic"]["enable_mood_genre"]
         self.stream_preference = config["ytmusic"]["stream_preference"]
 
         self.api = None

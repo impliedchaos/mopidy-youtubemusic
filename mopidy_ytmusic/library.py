@@ -14,6 +14,8 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
         self.ARTISTS = {}
 
     def browse(self, uri):
+        if not uri:
+            return []
         logger.info("YTMusic browsing uri \"%s\"", uri)
         if uri == "ytmusic:root":
             dirs = []
