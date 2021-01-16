@@ -4,7 +4,7 @@ from mopidy.models import Ref, Playlist
 
 class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
     def as_list(self):
-        logger.info("YoutubeMusic getting user playlists")
+        logger.debug("YoutubeMusic getting user playlists")
         refs = []
         try:
             playlists = self.backend.api.get_library_playlists(limit=100)
@@ -19,7 +19,7 @@ class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
 
     def lookup(self, uri):
         bId = parse_uri(uri)
-        logger.info("YoutubeMusic looking up playlist \"%s\"", bId)
+        logger.debug("YoutubeMusic looking up playlist \"%s\"", bId)
         try:
             pls = self.backend.api.get_playlist(bId, limit=self.backend.playlist_item_limit)
         except Exception:
@@ -36,7 +36,7 @@ class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
 
     def get_items(self, uri):
         bId = parse_uri(uri)
-        logger.info("YoutubeMusic getting playlist items for \"%s\"", bId)
+        logger.debug("YoutubeMusic getting playlist items for \"%s\"", bId)
         try:
             pls = self.backend.api.get_playlist(bId, limit=self.backend.playlist_item_limit)
         except Exception:
@@ -48,7 +48,7 @@ class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
         return None
 
     def create(self, name):
-        logger.info("YoutubeMusic creating playlist \"%s\"", name)
+        logger.debug("YoutubeMusic creating playlist \"%s\"", name)
         try:
             bId = self.backend.api.create_playlist(name, "")
         except Exception:
@@ -56,7 +56,7 @@ class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
             bId = None
         if bId:
             uri = f"youtubemusic:playlist:{bId}"
-            logger.info("YoutubeMusic created playlist \"%s\"", uri)
+            logger.debug("YoutubeMusic created playlist \"%s\"", uri)
             return Playlist(
                 uri=uri,
                 name=name,
@@ -66,7 +66,7 @@ class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
         return None
 
     def delete(self, uri):
-        logger.info("YoutubeMusic deleting playlist \"%s\"", uri)
+        logger.debug("YoutubeMusic deleting playlist \"%s\"", uri)
         bId = parse_uri(uri)
         try:
             self.backend.api.delete_playlist(bId)
@@ -80,7 +80,7 @@ class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
 
     def save(self, playlist):
         bId = parse_uri(playlist.uri)
-        logger.info("YoutubeMusic saving playlist \"%s\" \"%s\"", playlist.name, bId)
+        logger.debug("YoutubeMusic saving playlist \"%s\" \"%s\"", playlist.name, bId)
         try:
             pls = self.backend.api.get_playlist(bId, limit=self.backend.playlist_item_limit)
         except Exception:

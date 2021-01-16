@@ -17,7 +17,7 @@ class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
         self.YoutubeIE = self.YoutubeDL.get_info_extractor('Youtube')
 
     def translate_uri(self, uri):
-        logger.info('YoutubeMusic PlaybackProvider.translate_uri "%s"', uri)
+        logger.debug('YoutubeMusic PlaybackProvider.translate_uri "%s"', uri)
 
         if "youtubemusic:track:" not in uri:
             return None
@@ -107,7 +107,7 @@ class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
             else:
                 logger.error("Unable to get URL from stream for %s",bId)
                 return(None)
-            logger.info('Found %s stream with %d ABR for %s',playstr['audioQuality'],playstr['averageBitrate'],bId)
+            logger.debug('Found %s stream with %d ABR for %s',playstr['audioQuality'],playstr['averageBitrate'],bId)
         if url is not None:
             # Return the decoded youtube url to mopidy for playback.
             return(url)

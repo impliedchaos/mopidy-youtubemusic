@@ -78,7 +78,7 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
         t0 = time.time()
         self.playback.Youtube_Player_URL = self._get_youtube_player()
         t = time.time() - t0
-        logger.info("Youtube Player URL refreshed in %.2fs",t)
+        logger.debug("Youtube Player URL refreshed in %.2fs",t)
     
     def _get_youtube_player(self):
         # Refresh our js player URL so YDL can decode the signature correctly.
@@ -86,7 +86,7 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
         m = re.search(r'jsUrl"\s*:\s*"([^"]+)"',response.text)
         if m:
             url = m.group(1)
-            logger.info('YoutubeMusic updated player URL to %s',url)
+            logger.debug('YoutubeMusic updated player URL to %s',url)
             return(url)
         else:
             logger.error('YoutubeMusic unable to extract player URL.')
@@ -96,7 +96,7 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
         t0 = time.time()
         self._get_auto_playlists()
         t = time.time() - t0
-        logger.info("YoutubeMusic Auto Playlists refreshed in %.2fs",t)
+        logger.debug("YoutubeMusic Auto Playlists refreshed in %.2fs",t)
 
     def _get_auto_playlists(self):
         try:
@@ -112,7 +112,7 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
             for i in range(len(browse)-1,0,-1):
                 if len(browse[i]['items']) == 0:
                     browse.pop(i)
-            logger.info('YoutubeMusic loaded %d auto playlists sections',len(browse))
+            logger.debug('YoutubeMusic loaded %d auto playlists sections',len(browse))
             self.library.ytbrowse = browse
         except Exception:
             logger.exception('YoutubeMusic failed to load auto playlists')

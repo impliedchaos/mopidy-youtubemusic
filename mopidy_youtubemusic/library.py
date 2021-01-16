@@ -16,7 +16,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
     def browse(self, uri):
         if not uri:
             return []
-        logger.info("YoutubeMusic browsing uri \"%s\"", uri)
+        logger.debug("YoutubeMusic browsing uri \"%s\"", uri)
         if uri == "youtubemusic:root":
             dirs = []
             if self.backend.auth:
@@ -39,7 +39,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
         elif uri == "youtubemusic:subscriptions" and self.backend.subscribed_artist_limit:
             try:
                 subs = self.backend.api.get_library_subscriptions(limit=self.backend.subscribed_artist_limit)
-                logger.info("YoutubeMusic found %d artists in subscriptions", len(subs))
+                logger.debug("YoutubeMusic found %d artists in subscriptions", len(subs))
                 return [
                     Ref.artist(uri=f"youtubemusic:artist:{a['browseId']}", name=a["artist"])
                     for a in subs
@@ -52,7 +52,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                     Ref.artist(uri=f"youtubemusic:artist:{a['browseId']}", name=a["artist"])
                     for a in self.backend.api.get_library_artists(limit=100)
                 ]
-                logger.info("YoutubeMusic found %d artists in library", len(library_artists))
+                logger.debug("YoutubeMusic found %d artists in library", len(library_artists))
             except Exception:
                 logger.exception("YoutubeMusic failed getting artists from library")
                 library_artists = []
@@ -62,7 +62,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                         Ref.artist(uri=f"youtubemusic:artist:{a['browseId']}:upload", name=a["artist"])
                         for a in self.backend.api.get_library_upload_artists(limit=100)
                     ]
-                    logger.info("YoutubeMusic found %d uploaded artists", len(upload_artists))
+                    logger.debug("YoutubeMusic found %d uploaded artists", len(upload_artists))
                 except Exception:
                     logger.exception("YoutubeMusic failed getting uploaded artists")
                     upload_artists = []
@@ -75,7 +75,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                     Ref.album(uri=f"youtubemusic:album:{a['browseId']}", name=a["title"])
                     for a in self.backend.api.get_library_albums(limit=100)
                 ]
-                logger.info("YoutubeMusic found %d albums in library", len(library_albums))
+                logger.debug("YoutubeMusic found %d albums in library", len(library_albums))
             except Exception:
                 logger.exception("YoutubeMusic failed getting albums from library")
                 library_albums = []
@@ -85,7 +85,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                         Ref.album(uri=f"youtubemusic:album:{a['browseId']}:upload", name=a["title"])
                         for a in self.backend.api.get_library_upload_albums(limit=100)
                     ]
-                    logger.info("YoutubeMusic found %d uploaded albums", len(upload_albums))
+                    logger.debug("YoutubeMusic found %d uploaded albums", len(upload_albums))
                 except Exception:
                     logger.exception("YoutubeMusic failed getting uploaded albums")
                     upload_albums = []
@@ -96,7 +96,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             try:
                 res = self.backend.api.get_liked_songs(limit=self.backend.playlist_item_limit)
                 tracks = self.playlistToTracks(res)
-                logger.info("YoutubeMusic found %d liked songs", len(res["tracks"]))
+                logger.debug("YoutubeMusic found %d liked songs", len(res["tracks"]))
                 return [ Ref.track(uri=t.uri, name=t.name) for t in tracks ]
             except Exception:
                 logger.exception("YoutubeMusic failed getting liked songs")
@@ -104,7 +104,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             try:
                 res = self.backend.api.get_history()
                 tracks = self.playlistToTracks({'tracks': res})
-                logger.info("YoutubeMusic found %d songs from recent history",len(res))
+                logger.debug("YoutubeMusic found %d songs from recent history",len(res))
                 return [ Ref.track(uri=t.uri, name=t.name) for t in tracks ]
             except Exception:
                 logger.exception("YoutubeMusic failed getting listening history")
@@ -119,7 +119,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 if track_id:
                     res = self.backend.api.get_watch_playlist(track_id, limit=self.backend.playlist_item_limit)
                     if 'tracks' in res:
-                        logger.info("YoutubeMusic found %d watch songs for \"%s\"", len(res["tracks"]), track_id)
+                        logger.debug("YoutubeMusic found %d watch songs for \"%s\"", len(res["tracks"]), track_id)
                         res['tracks'].pop(0)
                         tracks = self.playlistToTracks(res)
                         return [ Ref.track(uri=t.uri, name=t.name) for t in tracks ]
@@ -200,7 +200,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 try:
                     res = self.backend.api.get_library_upload_artist(bId)
                     tracks = self.uploadArtistToTracks(res)
-                    logger.info("YoutubeMusic found %d songs for uploaded artist \"%s\"", len(res), res[0]["artist"]["name"])
+                    logger.debug("YoutubeMusic found %d songs for uploaded artist \"%s\"", len(res), res[0]["artist"]["name"])
                     return [ Ref.track(uri=t.uri, name=t.name) for t in tracks ]
                 except Exception:
                     logger.exception("YoutubeMusic failed getting tracks for uploaded artist \"%s\"", bId)
@@ -208,7 +208,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 try:
                     res = self.backend.api.get_artist(bId)
                     tracks = self.artistToTracks(res)
-                    logger.info("YoutubeMusic found %d songs for artist \"%s\" in library", len(res["songs"]), res["name"])
+                    logger.debug("YoutubeMusic found %d songs for artist \"%s\" in library", len(res["songs"]), res["name"])
                     return [ Ref.track(uri=t.uri, name=t.name) for t in tracks ]
                 except Exception:
                     logger.exception("YoutubeMusic failed getting tracks for artist \"%s\"", bId)
@@ -218,7 +218,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 try:
                     res = self.backend.api.get_library_upload_album(bId)
                     tracks = self.uploadAlbumToTracks(res, bId)
-                    logger.info("YoutubeMusic found %d songs for uploaded album \"%s\"", len(res["tracks"]), res["title"])
+                    logger.debug("YoutubeMusic found %d songs for uploaded album \"%s\"", len(res["tracks"]), res["title"])
                     return [ Ref.track(uri=t.uri, name=t.name) for t in tracks ]
                 except Exception:
                     logger.exception("YoutubeMusic failed getting tracks for uploaded album \"%s\"", bId)
@@ -226,7 +226,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 try:
                     res = self.backend.api.get_album(bId)
                     tracks = self.albumToTracks(res, bId)
-                    logger.info("YoutubeMusic found %d songs for album \"%s\" in library", len(res["tracks"]), res["title"])
+                    logger.debug("YoutubeMusic found %d songs for album \"%s\" in library", len(res["tracks"]), res["title"])
                     return [ Ref.track(uri=t.uri, name=t.name) for t in tracks ]
                 except Exception:
                     logger.exception("YoutubeMusic failed getting tracks for album \"%s\"", bId)
@@ -307,7 +307,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
 
     def search(self, query=None, uris=None, exact=False):
         results = []
-        logger.info("YoutubeMusic searching for %s", query)
+        logger.debug("YoutubeMusic searching for %s", query)
         if "any" in query:
             try:
                 res = self.backend.api.search(" ".join(query["any"]), filter=None)
@@ -344,7 +344,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             except Exception:
                 logger.exception("YoutubeMusic search failed for query \"album\"=\"%s\"", " ".join(query["album"]))
         else:
-            logger.info("YoutubeMusic skipping search, unsupported field types \"%s\"", " ".join(query.keys()))
+            logger.debug("YoutubeMusic skipping search, unsupported field types \"%s\"", " ".join(query.keys()))
             return None
         return results
 
@@ -460,7 +460,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
         if "songs" in artist and "browseId" in artist["songs"] and artist["songs"]["browseId"] is not None:
             res = self.backend.api.get_playlist(artist["songs"]["browseId"],limit=self.backend.playlist_item_limit)
             tracks = self.playlistToTracks(res)
-            logger.info('YoutubeMusic found %d tracks for %s',len(tracks),artist['name'])
+            logger.debug('YoutubeMusic found %d tracks for %s',len(tracks),artist['name'])
             return tracks
         return None
 
@@ -728,7 +728,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
         for track in tracks:
             bId, _ = parse_uri(track.uri)
             self.TRACKS[bId] = track
-        logger.info("YoutubeMusic search returned %d results", len(tracks) + len(sartists) + len(salbums))
+        logger.debug("YoutubeMusic search returned %d results", len(tracks) + len(sartists) + len(salbums))
         return SearchResult(
             uri="youtubemusic:search",
             tracks=tracks,
