@@ -6,6 +6,8 @@ Mopidy-YoutubeMusic
     :target: https://pypi.org/project/Mopidy-YoutubeMusic/
     :alt: Latest PyPI version
 
+.. image:: https://img.shields.io/github/commits-since/impliedchaos/mopidy-youtubemusic/latest
+
 Mopidy extension for playing music from YouTube Music
 
 Forked from `Mopidy-YTMusic <https://github.com/OzymandiasTheGreat/mopidy-ytmusic>`_ by `Tomas Ravinskas <https://github.com/OzymandiasTheGreat>`_.
