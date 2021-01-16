@@ -8,7 +8,7 @@ import hashlib
 
 from urllib.parse import parse_qs
 from mopidy import backend
-from mopidy_ytmusic import logger
+from mopidy_youtubemusic import logger
 from ytmusicapi.ytmusic import YTMusic
 from ytmusicapi.parsers.utils import nav, get_continuations, CAROUSEL_TITLE, TITLE, TITLE_TEXT, NAVIGATION_BROWSE_ID, SINGLE_COLUMN_TAB, SECTION_LIST
 
@@ -23,25 +23,25 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
         super().__init__()
         self.config = config
         self.audio = audio
-        self.uri_schemes = ["ytmusic"]
+        self.uri_schemes = ["youtubemusic"]
         self.auth = False
 
-        self._auto_playlist_refresh_rate = config["ytmusic"]["auto_playlist_refresh"] * 60
+        self._auto_playlist_refresh_rate = config["youtubemusic"]["auto_playlist_refresh"] * 60
         self._auto_playlist_refresh_timer = None
 
-        self._youtube_player_refresh_rate = config["ytmusic"]["youtube_player_refresh"] * 60
+        self._youtube_player_refresh_rate = config["youtubemusic"]["youtube_player_refresh"] * 60
         self._youtube_player_refresh_timer = None
 
-        self.playlist_item_limit = config["ytmusic"]["playlist_item_limit"]
-        self.subscribed_artist_limit = config["ytmusic"]["subscribed_artist_limit"]
-        self.history = config["ytmusic"]["enable_history"]
-        self.liked_songs = config["ytmusic"]["enable_liked_songs"]
-        self.mood_genre = config["ytmusic"]["enable_mood_genre"]
-        self.stream_preference = config["ytmusic"]["stream_preference"]
+        self.playlist_item_limit = config["youtubemusic"]["playlist_item_limit"]
+        self.subscribed_artist_limit = config["youtubemusic"]["subscribed_artist_limit"]
+        self.history = config["youtubemusic"]["enable_history"]
+        self.liked_songs = config["youtubemusic"]["enable_liked_songs"]
+        self.mood_genre = config["youtubemusic"]["enable_mood_genre"]
+        self.stream_preference = config["youtubemusic"]["stream_preference"]
 
         self.api = None
-        if config["ytmusic"]["auth_json"]:
-            self._ytmusicapi_auth_json = config["ytmusic"]["auth_json"]
+        if config["youtubemusic"]["auth_json"]:
+            self._ytmusicapi_auth_json = config["youtubemusic"]["auth_json"]
             self.auth = True
 
         self.playback = YoutubeMusicPlaybackProvider(audio=audio, backend=self)
@@ -86,21 +86,21 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
         m = re.search(r'jsUrl"\s*:\s*"([^"]+)"',response.text)
         if m:
             url = m.group(1)
-            logger.info('YTMusic updated player URL to %s',url)
+            logger.info('YoutubeMusic updated player URL to %s',url)
             return(url)
         else:
-            logger.error('YTMusic unable to extract player URL.')
+            logger.error('YoutubeMusic unable to extract player URL.')
             return(None)
 
     def _refresh_auto_playlists(self):
         t0 = time.time()
         self._get_auto_playlists()
         t = time.time() - t0
-        logger.info("Auto Playlists refreshed in %.2fs",t)
+        logger.info("YoutubeMusic Auto Playlists refreshed in %.2fs",t)
 
     def _get_auto_playlists(self):
         try:
-            logger.debug('YTMusic loading auto playlists')
+            logger.debug('YoutubeMusic loading auto playlists')
             response = self.api._send_request('browse',{})
             tab = nav(response, SINGLE_COLUMN_TAB)
             browse = parse_auto_playlists(nav(tab, SECTION_LIST))
@@ -112,15 +112,15 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
             for i in range(len(browse)-1,0,-1):
                 if len(browse[i]['items']) == 0:
                     browse.pop(i)
-            logger.info('YTMusic loaded %d auto playlists sections',len(browse))
+            logger.info('YoutubeMusic loaded %d auto playlists sections',len(browse))
             self.library.ytbrowse = browse
         except Exception:
-            logger.exception('YTMusic failed to load auto playlists')
+            logger.exception('YoutubeMusic failed to load auto playlists')
         return(None)
 
     def scrobble_track(self,bId):
         # Called through YoutubeMusicScrobbleListener
-        # Let YTMusic know we're playing this track so it will be added to our history.
+        # Let YouTube Music know we're playing this track so it will be added to our history.
         endpoint = "https://www.youtube.com/get_video_info"
         params = {"video_id": bId, "hl": self.api.language, "el": "detailpage", "c": "WEB_REMIX", "cver": "0.1"}
         response = requests.get(endpoint,params,headers=self.api.headers,proxies=self.api.proxies)
@@ -154,7 +154,7 @@ def parse_auto_playlists(res):
         else:
             continue
         stitle = nav(car, CAROUSEL_TITLE + ['text']).strip()
-        browse.append({'name':stitle,'uri':'ytmusic:auto:'+hashlib.md5(stitle.encode('utf-8')).hexdigest(),'items':[]})
+        browse.append({'name':stitle,'uri':'youtubemusic:auto:'+hashlib.md5(stitle.encode('utf-8')).hexdigest(),'items':[]})
         for item in nav(car,['contents']):
             brId = nav(item,['musicTwoRowItemRenderer'] + TITLE + NAVIGATION_BROWSE_ID, True)
             if brId is None or brId == 'VLLM':
@@ -167,14 +167,14 @@ def parse_auto_playlists(res):
                     for st in item['musicTwoRowItemRenderer']['subtitle']['runs']:
                         ititle += st['text']
                     ititle += ')'
-                browse[-1]['items'].append({'type':'playlist','uri':f"ytmusic:playlist:{brId}",'name':ititle})
+                browse[-1]['items'].append({'type':'playlist','uri':f"youtubemusic:playlist:{brId}",'name':ititle})
             elif pagetype == 'MUSIC_PAGE_TYPE_ARTIST':
-                browse[-1]['items'].append({'type':'artist','uri':f"ytmusic:artist:{brId}",'name':ititle+' (Artist)'})
+                browse[-1]['items'].append({'type':'artist','uri':f"youtubemusic:artist:{brId}",'name':ititle+' (Artist)'})
             elif pagetype == 'MUSIC_PAGE_TYPE_ALBUM':
                 artist = nav(item,['musicTwoRowItemRenderer','subtitle','runs',-1,'text'],True)
                 ctype  = nav(item,['musicTwoRowItemRenderer','subtitle','runs',0,'text'],True)
                 if artist is not None:
-                    browse[-1]['items'].append({'type':'album','uri':f"ytmusic:album:{brId}",'name':artist+' - '+ititle+' ('+ctype+')'})
+                    browse[-1]['items'].append({'type':'album','uri':f"youtubemusic:album:{brId}",'name':artist+' - '+ititle+' ('+ctype+')'})
                 else:
-                    browse[-1]['items'].append({'type':'album','uri':f"ytmusic:album:{brId}",'name':ititle+' ('+ctype+')'})
+                    browse[-1]['items'].append({'type':'album','uri':f"youtubemusic:album:{brId}",'name':ititle+' ('+ctype+')'})
     return(browse)

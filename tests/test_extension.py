@@ -1,9 +1,9 @@
 import unittest
 from unittest import mock
 
-from mopidy_ytmusic import Extension
-from mopidy_ytmusic import backend as backend_lib
-from mopidy_ytmusic import scrobble_fe
+from mopidy_youtubemusic import Extension
+from mopidy_youtubemusic import backend as backend_lib
+from mopidy_youtubemusic import scrobble_fe
 
 class ExtensionTest(unittest.TestCase):
     @staticmethod
@@ -20,13 +20,13 @@ class ExtensionTest(unittest.TestCase):
         config['enable_mood_genre'] = True
         config['enable_scrobbling'] = False
         config['stream_preference'] = ['141','251','140','250','249']
-        return({"ytmusic": config, "proxy": {}})
+        return({"youtubemusic": config, "proxy": {}})
 
     def test_get_default_config(self):
         ext = Extension()
         config = ext.get_default_config()
 
-        assert "[ytmusic]" in config
+        assert "[youtubemusic]" in config
         assert "enabled = true" in config
         assert "auth_json =" in config
         assert "auto_playlist_refresh = 60" in config

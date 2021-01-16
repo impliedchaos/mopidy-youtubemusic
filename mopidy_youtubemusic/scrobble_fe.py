@@ -2,13 +2,13 @@
 import pykka
 
 from mopidy import core, listener
-from mopidy_ytmusic import logger
+from mopidy_youtubemusic import logger
 
 class YoutubeMusicScrobbleFE(pykka.ThreadingActor, core.CoreListener):
     def __init__(self, config, core):
         super().__init__()
         self.config = config
-        self.scrobbling = config["ytmusic"]["enable_scrobbling"]
+        self.scrobbling = config["youtubemusic"]["enable_scrobbling"]
 
     def track_playback_ended(self, tl_track, time_position):
         if self.scrobbling:

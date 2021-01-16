@@ -5,15 +5,15 @@ import pkg_resources
 
 from mopidy import config, ext
 
-__version__ = pkg_resources.get_distribution("Mopidy-YTMusic").version
+__version__ = pkg_resources.get_distribution("Mopidy-YoutubeMusic").version
 
 logger = logging.getLogger(__name__)
 
 
 class Extension(ext.Extension):
 
-    dist_name = "Mopidy-YTMusic"
-    ext_name = "ytmusic"
+    dist_name = "Mopidy-YoutubeMusic"
+    ext_name = "youtubemusic"
     version = __version__
 
     def get_default_config(self):

@@ -1,7 +1,7 @@
 import unittest
 
 from mopidy.models import Ref
-from mopidy_ytmusic import backend as backend_lib
+from mopidy_youtubemusic import backend as backend_lib
 
 from tests.test_extension import ExtensionTest
 
@@ -15,26 +15,26 @@ class LibraryTest(unittest.TestCase):
             assert refs == []
         
         def test_browse_root(self):
-            refs = self.backend.library.browse('ytmusic:root')
+            refs = self.backend.library.browse('youtubemusic:root')
             found = False
             for ref in refs:
-                if ref.uri == "ytmusic:watch":
+                if ref.uri == "youtubemusic:watch":
                     found = True
                     break
-            assert found, "ref 'ytmusic:watch' not found"
+            assert found, "ref 'youtubemusic:watch' not found"
             found = False
             for ref in refs:
-                if ref.uri == "ytmusic:mood":
+                if ref.uri == "youtubemusic:mood":
                     found = True
                     break
-            assert found, "ref 'ytmusic:mood' not found"
+            assert found, "ref 'youtubemusic:mood' not found"
             found = False
             for ref in refs:
-                if ref.uri == "ytmusic:auto":
+                if ref.uri == "youtubemusic:auto":
                     found = True
                     break
-            assert found, "ref 'ytmusic:auto' not found"
+            assert found, "ref 'youtubemusic:auto' not found"
 
         def test_browse_moods(self):
-            refs = self.backend.library.browse('ytmusic:mood')
+            refs = self.backend.library.browse('youtubemusic:mood')
             assert refs is not None

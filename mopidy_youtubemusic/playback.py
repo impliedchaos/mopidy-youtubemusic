@@ -2,7 +2,7 @@ import requests
 import re
 from urllib.parse import parse_qs
 from mopidy import backend, httpclient
-from mopidy_ytmusic import logger
+from mopidy_youtubemusic import logger
 from youtube_dl import YoutubeDL
 
 class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
@@ -17,9 +17,9 @@ class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
         self.YoutubeIE = self.YoutubeDL.get_info_extractor('Youtube')
 
     def translate_uri(self, uri):
-        logger.info('YTMusic PlaybackProvider.translate_uri "%s"', uri)
+        logger.info('YoutubeMusic PlaybackProvider.translate_uri "%s"', uri)
 
-        if "ytmusic:track:" not in uri:
+        if "youtubemusic:track:" not in uri:
             return None
 
         try:

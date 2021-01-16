@@ -1,50 +1,39 @@
 ****************************
-Mopidy-YTMusic
+Mopidy-YoutubeMusic
 ****************************
 
-.. image:: https://img.shields.io/pypi/v/Mopidy-YTMusic
-    :target: https://pypi.org/project/Mopidy-YTMusic/
+.. image:: https://img.shields.io/pypi/v/Mopidy-YoutubeMusic
+    :target: https://pypi.org/project/Mopidy-YoutubeMusic/
     :alt: Latest PyPI version
 
 Mopidy extension for playing music from YouTube Music
 
+Forked from `Mopidy-YTMusic <https://github.com/OzymandiasTheGreat/mopidy-ytmusic>`_ by `Tomas Ravinskas <https://github.com/OzymandiasTheGreat>`_.
 
 Installation
 ============
 
-.. raw:: html
-
-    <strike>
-
 Install by running::
 
-    python3 -m pip install Mopidy-YTMusic
+    python3 -m pip install Mopidy-YoutubeMusic
 
-See https://mopidy.com/ext/ytmusic/ for alternative installation methods.
-
-.. raw:: html
-
-    </strike>
-
-Not to use the code from this fork.  See "Build for Local Install" below instead.
 
 Configuration
 =============
 
-Before starting Mopidy, you must add configuration for
-Mopidy-YTMusic to your Mopidy configuration file::
+Before starting Mopidy, you need to enable Mopidy-YoutubeMusic in your Mopidy configuration file::
 
-    [ytmusic]
+    [youtubemusic]
     enabled = true
 
-By default Mopidy-YTMusic will connect to YouTube Music as a guest account.  This
+By default Mopidy-YoutubeMusic will connect to YouTube Music as a guest account.  This
 has limited options.  If you would like to connect to YouTube Music with your
-account (free or premium) you'll need to generate an auth.json file and configure
-Mopidy-YTMusic to use it.
+account (free or premium) you'll need to generate an :code:`auth.json` file and configure
+Mopidy-YoutubeMusic to use it.
 
-To create an auth.json file run :code:`mopidy ytmusic setup` and follow instructions
-in the terminal. When you're done it will tell you what config options you need
-to add to your Mopidy configuration file.
+To create an auth.json file run :code:`mopidy youtubemusic setup` and follow instructions
+in the terminal. When you're done it will tell you what config options (e.g. :code:`auth = /path/to/auth.json`)
+you need to add to your Mopidy configuration file.
 
 Authenticated users have access to their listening history, likes,
 playlists and uploaded music.  Premium users have access to high quality audio
@@ -62,7 +51,7 @@ Other configuration options are as follows:
 - :code:`enable_scrobbling` - Mark tracks as played on YouTube Music after listening.  Default: yes
 - :code:`stream_preference` - Comma separated list of itags in the order of preference you want for stream.  Default: "141, 251, 140, 250, 249"
 
-Info on YouTube Music streams:
+Information on YouTube Music streams:
 
 +----------+-------+-------------+----------+
 | itag     | Codec | Sample Rate | Bit Rate |
@@ -85,21 +74,21 @@ Build for Local Install
 
 1. Install `poetry <https://python-poetry.org/docs/#installation>`
 2. Run :code:`poetry build` to create the build tarball
-3. The :code:`dist/Mopidy-YTMusic-x.x.x.tar.gz` file is what you'll use to install.
-4. With pip: :code:`python3 -m pip install dist/Mopidy-YTMusic-x.x.x.tar.gz` to install or reinstall over an existing version.
+3. The :code:`dist/Mopidy-YoutubeMusic-x.x.x.tar.gz` file is what you'll use to install.
+4. With pip: :code:`python3 -m pip install dist/Mopidy-YoutubeMusic-x.x.x.tar.gz` to install or reinstall over an existing version.
 5. Do configuration stuff if you haven't already.  
 
 Project resources
 =================
 
-- `Source code <https://github.com/OzymandiasTheGreat/mopidy-ytmusic>`_
-- `Issue tracker <https://github.com/OzymandiasTheGreat/mopidy-ytmusic/issues>`_
-- `Changelog <https://github.com/OzymandiasTheGreat/mopidy-ytmusic/blob/master/CHANGELOG.rst>`_
+- `Source code <https://github.com/impliedchaos/mopidy-youtubemusic>`_
+- `Issue tracker <https://github.com/impliedchaos/mopidy-youtubemusic/issues>`_
+- `Changelog <https://github.com/impliedchaos/mopidy-youtubemusic/blob/master/CHANGELOG.rst>`_
 
 
 Credits
 =======
 
 - Original author: `Tomas Ravinskas <https://github.com/OzymandiasTheGreat>`__
-- Current maintainer: `Tomas Ravinskas <https://github.com/OzymandiasTheGreat>`__
-- `Contributors <https://github.com/OzymandiasTheGreat/mopidy-ytmusic/graphs/contributors>`_
+- Current maintainer: `Dave Maez <https://github.com/impliedchaos>`__
+- `Contributors <https://github.com/impliedchaos/mopidy-youtubemusic/graphs/contributors>`_

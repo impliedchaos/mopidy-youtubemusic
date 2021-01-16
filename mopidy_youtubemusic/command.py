@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 from mopidy import commands
-from mopidy_ytmusic import logger
+from mopidy_youtubemusic import logger
 
 
 class YoutubeMusicCommand(commands.Command):
@@ -30,12 +30,12 @@ class SetupCommand(commands.Command):
         try:
             print(YTMusic.setup(filepath=str(path)))
         except Exception:
-            logger.exception("YTMusic setup failed")
+            logger.exception("YoutubeMusic setup failed")
             return 1
         print("Authentication JSON data saved to {}".format(str(path)))
         print('')
         print('Update your mopidy.conf to reflect the new auth file:')
-        print('   [ytmusic]')
+        print('   [youtubemusic]')
         print('   enabled=true')
         print('   auth_json='+str(path))
         return 0

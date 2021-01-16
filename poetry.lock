@@ -369,7 +369,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "youtube-dl"
-version = "2020.12.31"
+version = "2021.1.16"
 description = "YouTube video downloader"
 category = "main"
 optional = false
@@ -404,7 +404,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "7783b886dc6e092bc342a137d591202c631b1ba7e6353590ceb9afe744123225"
+content-hash = "d4f62a7372a211139650d387b83a3490f0e783e85e1fb48363d21a9707c91a48"
 
 [metadata.files]
 alabaster = [
@@ -611,8 +611,8 @@ urllib3 = [
     {file = "urllib3-1.26.2.tar.gz", hash = "sha256:19188f96923873c92ccb987120ec4acaa12f0461fa9ce5d3d0772bc965a39e08"},
 ]
 youtube-dl = [
-    {file = "youtube_dl-2020.12.31-py2.py3-none-any.whl", hash = "sha256:995fcc59de777177f51ed91537d083bbb9323d7d71c8f12635583b246e3ac78a"},
-    {file = "youtube_dl-2020.12.31.tar.gz", hash = "sha256:173fca869f8d2a6008cd7d13627f368adc1f334e973f49f03a3fe62b16ac2fea"},
+    {file = "youtube_dl-2021.1.16-py2.py3-none-any.whl", hash = "sha256:8f421ca8394d2529e06225e44ec66538d2a28f6f340c03065776894bf3d24ea6"},
+    {file = "youtube_dl-2021.1.16.tar.gz", hash = "sha256:acf74701a31b6c3d06f9d4245a46ba8fb6c378931681177412043c6e8276fee7"},
 ]
 ytmusicapi = [
     {file = "ytmusicapi-0.13.1-py3-none-any.whl", hash = "sha256:eead6bd304455c1d542557f4f01135041438a01ef9a73d1c34fd43aeb63db487"},
