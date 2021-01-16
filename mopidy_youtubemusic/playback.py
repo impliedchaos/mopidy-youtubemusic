@@ -5,6 +5,7 @@ from mopidy import backend, httpclient
 from mopidy_youtubemusic import logger
 from youtube_dl import YoutubeDL
 
+
 class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -30,7 +31,7 @@ class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
             logger.error('translate_uri error "%s"', str(e))
             return None
 
-    def _get_track(self,bId):
+    def _get_track(self, bId):
         streams = self.backend.api.get_streaming_data(bId)
         playstr = None
         url = None
@@ -43,17 +44,17 @@ class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
             elif 'dashManifestUrl' in streams:
                 # Grab the dashmanifest XML and parse out the streams from it
                 dash = requests.get(streams['dashManifestUrl'])
-                formats = re.findall(r'<Representation id="(\d+)" .*? bandwidth="(\d+)".*?BaseURL>(.*?)</BaseURL',dash.text)
+                formats = re.findall(r'<Representation id="(\d+)" .*? bandwidth="(\d+)".*?BaseURL>(.*?)</BaseURL', dash.text)
                 for stream in formats:
                     tags[stream[0]] = {
                         'url': stream[2],
-                        'audioQuality': 'ITAG_'+stream[0],
+                        'audioQuality': 'ITAG_' + stream[0],
                         'averageBitrate': int(stream[1]),
                     }
             for i, p in enumerate(self.backend.stream_preference, start=1):
                 if str(p) in tags:
                     playstr = tags[str(p)]
-                    logger.debug("Found #%d preference stream %s",i,str(p))
+                    logger.debug("Found #%d preference stream %s", i, str(p))
                     break
         if playstr is None:
             # Couldn't find our preference, let's try something else:
@@ -78,11 +79,11 @@ class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
                 if playstr is None:
                     # sigh.
                     if len(crap):
-                        playstr=crap[sorted(list(crap.keys()))[-1]]
+                        playstr = crap[sorted(list(crap.keys()))[-1]]
                         if 'audioQuality' not in playstr:
                             playstr['audioQuality'] = 'AUDIO_QUALITY_GARBAGE'
                     elif len(worse):
-                        playstr=worse[sorted(list(worse.keys()))[-1]]
+                        playstr = worse[sorted(list(worse.keys()))[-1]]
                         if 'audioQuality' not in playstr:
                             playstr['audioQuality'] = 'AUDIO_QUALITY_FECES'
             elif 'formats' in streams:
@@ -91,7 +92,7 @@ class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
                 if 'audioQuality' not in playstr:
                     playstr['audioQuality'] = 'AUDIO_QUALITY_404'
             else:
-                logger.error('No streams found for %s. Falling back to youtube-dl.',bId)
+                logger.error('No streams found for %s. Falling back to youtube-dl.', bId)
         if playstr is not None:
             # Use Youtube-DL's Info Extractor to decode the signature.
             if 'signatureCipher' in playstr:
@@ -105,9 +106,9 @@ class YoutubeMusicPlaybackProvider(backend.PlaybackProvider):
             elif 'url' in playstr:
                 url = playstr['url']
             else:
-                logger.error("Unable to get URL from stream for %s",bId)
+                logger.error("Unable to get URL from stream for %s", bId)
                 return(None)
-            logger.debug('Found %s stream with %d ABR for %s',playstr['audioQuality'],playstr['averageBitrate'],bId)
+            logger.debug('Found %s stream with %d ABR for %s', playstr['audioQuality'], playstr['averageBitrate'], bId)
         if url is not None:
             # Return the decoded youtube url to mopidy for playback.
             return(url)

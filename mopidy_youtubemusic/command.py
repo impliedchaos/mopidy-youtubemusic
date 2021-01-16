@@ -19,8 +19,8 @@ class SetupCommand(commands.Command):
         filepath = input("Enter the path where you want to save auth.json [default=current dir]: ")
         if not filepath:
             filepath = os.getcwd()
-        path = Path(filepath+'/auth.json')
-        print('Using "'+str(path)+'"')
+        path = Path(filepath + '/auth.json')
+        print('Using "' + str(path) + '"')
         if (path.exists()):
             print("File already exists!")
             return 1
@@ -37,5 +37,5 @@ class SetupCommand(commands.Command):
         print('Update your mopidy.conf to reflect the new auth file:')
         print('   [youtubemusic]')
         print('   enabled=true')
-        print('   auth_json='+str(path))
+        print('   auth_json=' + str(path))
         return 0

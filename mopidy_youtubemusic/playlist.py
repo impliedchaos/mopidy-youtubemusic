@@ -2,6 +2,7 @@ from mopidy import backend
 from mopidy_youtubemusic import logger
 from mopidy.models import Ref, Playlist
 
+
 class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
     def as_list(self):
         logger.debug("YoutubeMusic getting user playlists")
@@ -44,7 +45,7 @@ class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
             pls = None
         if pls:
             tracks = self.backend.library.playlistToTracks(pls)
-            return [ Ref.track(uri=t.uri, name=t.name) for t in tracks ]
+            return [Ref.track(uri=t.uri, name=t.name) for t in tracks]
         return None
 
     def create(self, name):
@@ -111,6 +112,7 @@ class YoutubeMusicPlaylistsProvider(backend.PlaylistsProvider):
             except Exception:
                 logger.exception("YoutubeMusic failed renaming playlist")
         return playlist
+
 
 def parse_uri(uri):
     return(uri.split(':')[2])

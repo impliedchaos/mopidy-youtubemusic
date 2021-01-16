@@ -5,6 +5,7 @@ from mopidy_youtubemusic import Extension
 from mopidy_youtubemusic import backend as backend_lib
 from mopidy_youtubemusic import scrobble_fe
 
+
 class ExtensionTest(unittest.TestCase):
     @staticmethod
     def get_config():
@@ -19,7 +20,7 @@ class ExtensionTest(unittest.TestCase):
         config['enable_liked_songs'] = False
         config['enable_mood_genre'] = True
         config['enable_scrobbling'] = False
-        config['stream_preference'] = ['141','251','140','250','249']
+        config['stream_preference'] = ['141', '251', '140', '250', '249']
         return({"youtubemusic": config, "proxy": {}})
 
     def test_get_default_config(self):
@@ -38,7 +39,6 @@ class ExtensionTest(unittest.TestCase):
         assert "enable_mood_genre = yes" in config
         assert "enable_scrobbling = yes" in config
         assert "stream_preference = 141, 251, 140, 250, 249" in config
-
 
     def test_get_config_schema(self):
         ext = Extension()
