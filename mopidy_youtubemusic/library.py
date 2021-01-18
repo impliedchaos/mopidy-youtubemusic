@@ -5,7 +5,7 @@ from ytmusicapi.parsers.utils import nav, TITLE_TEXT, NAVIGATION_BROWSE_ID, SING
 
 
 class YoutubeMusicLibraryProvider(backend.LibraryProvider):
-    root_directory = Ref.directory(uri="youtubemusic: root", name="YouTube Music")
+    root_directory = Ref.directory(uri="youtubemusic:root", name="YouTube Music")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,39 +18,39 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
         if not uri:
             return []
         logger.debug("YoutubeMusic browsing uri \"%s\"", uri)
-        if uri == "youtubemusic: root":
+        if uri == "youtubemusic:root":
             dirs = []
             if self.backend.auth:
                 dirs += [
-                    Ref.directory(uri="youtubemusic: artist", name="Artists"),
-                    Ref.directory(uri="youtubemusic: album", name="Albums"),
+                    Ref.directory(uri="youtubemusic:artist", name="Artists"),
+                    Ref.directory(uri="youtubemusic:album", name="Albums"),
                 ]
                 if self.backend.liked_songs:
-                    dirs.append(Ref.directory(uri="youtubemusic: liked", name="Liked Songs"))
+                    dirs.append(Ref.directory(uri="youtubemusic:liked", name="Liked Songs"))
                 if self.backend.history:
-                    dirs.append(Ref.directory(uri="youtubemusic: history", name="Recently Played"))
+                    dirs.append(Ref.directory(uri="youtubemusic:history", name="Recently Played"))
                 if self.backend.subscribed_artist_limit:
-                    dirs.append(Ref.directory(uri="youtubemusic: subscriptions", name="Subscriptions"))
-            dirs.append(Ref.directory(uri="youtubemusic: watch", name="Similar to last played"))
+                    dirs.append(Ref.directory(uri="youtubemusic:subscriptions", name="Subscriptions"))
+            dirs.append(Ref.directory(uri="youtubemusic:watch", name="Similar to last played"))
             if self.backend.mood_genre:
-                dirs.append(Ref.directory(uri="youtubemusic: mood", name="Mood and Genre Playlists"))
+                dirs.append(Ref.directory(uri="youtubemusic:mood", name="Mood and Genre Playlists"))
             if self.backend._auto_playlist_refresh_rate:
-                dirs.append(Ref.directory(uri="youtubemusic: auto", name="Auto Playlists"))
+                dirs.append(Ref.directory(uri="youtubemusic:auto", name="Auto Playlists"))
             return(dirs)
-        elif uri == "youtubemusic: subscriptions" and self.backend.subscribed_artist_limit:
+        elif uri == "youtubemusic:subscriptions" and self.backend.subscribed_artist_limit:
             try:
                 subs = self.backend.api.get_library_subscriptions(limit=self.backend.subscribed_artist_limit)
                 logger.debug("YoutubeMusic found %d artists in subscriptions", len(subs))
                 return [
-                    Ref.artist(uri=f"youtubemusic: artist: {a['browseId']}", name=a["artist"])
+                    Ref.artist(uri=f"youtubemusic:artist:{a['browseId']}", name=a["artist"])
                     for a in subs
                 ]
             except Exception:
                 logger.exception("YoutubeMusic failed getting artists from subscriptions")
-        elif uri == "youtubemusic: artist":
+        elif uri == "youtubemusic:artist":
             try:
                 library_artists = [
-                    Ref.artist(uri=f"youtubemusic: artist: {a['browseId']}", name=a["artist"])
+                    Ref.artist(uri=f"youtubemusic:artist:{a['browseId']}", name=a["artist"])
                     for a in self.backend.api.get_library_artists(limit=100)
                 ]
                 logger.debug("YoutubeMusic found %d artists in library", len(library_artists))
@@ -60,7 +60,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             if self.backend.auth:
                 try:
                     upload_artists = [
-                        Ref.artist(uri=f"youtubemusic: artist: {a['browseId']}: upload", name=a["artist"])
+                        Ref.artist(uri=f"youtubemusic:artist:{a['browseId']}:upload", name=a["artist"])
                         for a in self.backend.api.get_library_upload_artists(limit=100)
                     ]
                     logger.debug("YoutubeMusic found %d uploaded artists", len(upload_artists))
@@ -70,10 +70,10 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             else:
                 upload_artists = []
             return library_artists + upload_artists
-        elif uri == "youtubemusic: album":
+        elif uri == "youtubemusic:album":
             try:
                 library_albums = [
-                    Ref.album(uri=f"youtubemusic: album: {a['browseId']}", name=a["title"])
+                    Ref.album(uri=f"youtubemusic:album:{a['browseId']}", name=a["title"])
                     for a in self.backend.api.get_library_albums(limit=100)
                 ]
                 logger.debug("YoutubeMusic found %d albums in library", len(library_albums))
@@ -83,7 +83,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             if self.backend.auth:
                 try:
                     upload_albums = [
-                        Ref.album(uri=f"youtubemusic: album: {a['browseId']}: upload", name=a["title"])
+                        Ref.album(uri=f"youtubemusic:album:{a['browseId']}:upload", name=a["title"])
                         for a in self.backend.api.get_library_upload_albums(limit=100)
                     ]
                     logger.debug("YoutubeMusic found %d uploaded albums", len(upload_albums))
@@ -93,7 +93,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             else:
                 upload_albums = []
             return library_albums + upload_albums
-        elif uri == "youtubemusic: liked":
+        elif uri == "youtubemusic:liked":
             try:
                 res = self.backend.api.get_liked_songs(limit=self.backend.playlist_item_limit)
                 tracks = self.playlistToTracks(res)
@@ -101,7 +101,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 return [Ref.track(uri=t.uri, name=t.name) for t in tracks]
             except Exception:
                 logger.exception("YoutubeMusic failed getting liked songs")
-        elif uri == "youtubemusic: history":
+        elif uri == "youtubemusic:history":
             try:
                 res = self.backend.api.get_history()
                 tracks = self.playlistToTracks({'tracks': res})
@@ -109,7 +109,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 return [Ref.track(uri=t.uri, name=t.name) for t in tracks]
             except Exception:
                 logger.exception("YoutubeMusic failed getting listening history")
-        elif uri == "youtubemusic: watch":
+        elif uri == "youtubemusic:watch":
             try:
                 playback = self.backend.playback
                 if playback.last_id is not None:
@@ -126,7 +126,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                         return [Ref.track(uri=t.uri, name=t.name) for t in tracks]
             except Exception:
                 logger.exception("YoutubeMusic failed getting watch songs")
-        elif uri == "youtubemusic: mood":
+        elif uri == "youtubemusic:mood":
             try:
                 logger.debug('YoutubeMusic loading mood/genre playlists')
                 moods = {}
@@ -136,17 +136,17 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                         title = nav(cat, ['musicNavigationButtonRenderer', 'buttonText', 'runs', 0, 'text']).strip()
                         endpnt = nav(cat, ['musicNavigationButtonRenderer', 'clickCommand', 'browseEndpoint', 'browseId'])
                         params = nav(cat, ['musicNavigationButtonRenderer', 'clickCommand', 'browseEndpoint', 'params'])
-                        moods[title] = {'name': title, 'uri': 'youtubemusic: mood: ' + params + ': ' + endpnt}
+                        moods[title] = {'name': title, 'uri': 'youtubemusic:mood:' + params + ':' + endpnt}
                 return [
                     Ref.directory(uri=moods[a]['uri'], name=moods[a]['name'])
                     for a in sorted(moods.keys())
                 ]
             except Exception:
                 logger.exception('YoutubeMusic failed to load mood/genre playlists')
-        elif uri.startswith("youtubemusic: mood: "):
+        elif uri.startswith("youtubemusic:mood:"):
             try:
                 ret = []
-                _, _, params, endpnt = uri.split(': ')
+                _, _, params, endpnt = uri.split(':')
                 response = self.backend.api._send_request('browse', {"browseId": endpnt, "params": params})
                 for sect in nav(response, SINGLE_COLUMN_TAB + SECTION_LIST):
                     key = []
@@ -165,11 +165,11 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
 #                                   title += st['text']
 #                               title += ')'
                             brId = nav(item, ['musicTwoRowItemRenderer'] + NAVIGATION_BROWSE_ID)
-                            ret.append(Ref.playlist(uri=f"youtubemusic: playlist: {brId}", name=title))
+                            ret.append(Ref.playlist(uri=f"youtubemusic:playlist:{brId}", name=title))
                 return(ret)
             except Exception:
                 logger.exception('YoutubeMusic failed getting mood/genre playlist "%s"', uri)
-        elif uri == "youtubemusic: auto" and self.backend._auto_playlist_refresh_rate:
+        elif uri == "youtubemusic:auto" and self.backend._auto_playlist_refresh_rate:
             try:
                 return [
                     Ref.directory(uri=a['uri'], name=a['name'])
@@ -177,7 +177,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 ]
             except Exception:
                 logger.exception('YoutubeMusic failed getting auto playlists')
-        elif uri.startswith("youtubemusic: auto: ") and self.backend._auto_playlist_refresh_rate:
+        elif uri.startswith("youtubemusic:auto:") and self.backend._auto_playlist_refresh_rate:
             try:
                 for a in self.ytbrowse:
                     if a['uri'] == uri:
@@ -195,7 +195,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                         return(ret)
             except Exception:
                 logger.exception('YoutubeMusic failed getting auto playlist "%s"', uri)
-        elif uri.startswith("youtubemusic: artist: "):
+        elif uri.startswith("youtubemusic:artist:"):
             bId, upload = parse_uri(uri)
             if upload:
                 try:
@@ -213,7 +213,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                     return [Ref.track(uri=t.uri, name=t.name) for t in tracks]
                 except Exception:
                     logger.exception("YoutubeMusic failed getting tracks for artist \"%s\"", bId)
-        elif uri.startswith("youtubemusic: album: "):
+        elif uri.startswith("youtubemusic:album:"):
             bId, upload = parse_uri(uri)
             if upload:
                 try:
@@ -231,7 +231,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                     return [Ref.track(uri=t.uri, name=t.name) for t in tracks]
                 except Exception:
                     logger.exception("YoutubeMusic failed getting tracks for album \"%s\"", bId)
-        elif uri.startswith("youtubemusic: playlist: "):
+        elif uri.startswith("youtubemusic:playlist:"):
             bId, upload = parse_uri(uri)
             try:
                 res = self.backend.api.get_playlist(bId, limit=self.backend.playlist_item_limit)
@@ -243,21 +243,21 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
 
     def lookup(self, uri):
         bId, _ = parse_uri(uri)
-        if (uri.startswith("youtubemusic: album: ")):
+        if (uri.startswith("youtubemusic:album:")):
             try:
                 res = self.backend.api.get_album(bId)
                 tracks = self.albumToTracks(res, bId)
                 return(tracks)
             except Exception:
                 logger.exception("YoutubeMusic failed getting tracks for album \"%s\"", bId)
-        elif (uri.startswith("youtubemusic: artist: ")):
+        elif (uri.startswith("youtubemusic:artist:")):
             try:
                 res = self.backend.api.get_artist(bId)
                 tracks = self.artistToTracks(res)
                 return(tracks)
             except Exception:
                 logger.exception("YoutubeMusic failed getting tracks for artist \"%s\"", bId)
-        elif (uri.startswith("youtubemusic: playlist: ")):
+        elif (uri.startswith("youtubemusic:playlist:")):
             try:
                 res = self.backend.api.get_playlist(bId, limit=self.backend.playlist_item_limit)
                 tracks = self.playlistToTracks(res)
@@ -355,13 +355,13 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             for track in pls["tracks"]:
                 duration = ['0', '0']
                 if 'duration' in track or 'length' in track:
-                    duration = (track['duration'] if 'duration' in track else track['length']).split(": ")
+                    duration = (track['duration'] if 'duration' in track else track['length']).split(":")
                 artists = []
                 if 'artists' in track:
                     for a in track['artists']:
                         if a['id'] not in self.ARTISTS:
                             self.ARTISTS[a['id']] = Artist(
-                                uri=f"youtubemusic: artist: {a['id']}",
+                                uri=f"youtubemusic:artist:{a['id']}",
                                 name=a["name"],
                                 sortname=a["name"],
                                 musicbrainz_id="",
@@ -379,7 +379,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 if 'album' in track and track['album'] is not None:
                     if track['album']['id'] not in self.ALBUMS:
                         self.ALBUMS[track['album']['id']] = Album(
-                            uri=f"youtubemusic: album: {track['album']['id']}",
+                            uri=f"youtubemusic:album:{track['album']['id']}",
                             name=track["album"]["name"],
                             artists=artists,
                             num_tracks=None,
@@ -393,7 +393,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
 
                 if track["videoId"] not in self.TRACKS:
                     self.TRACKS[track["videoId"]] = Track(
-                        uri=f"youtubemusic: track: {track['videoId']}",
+                        uri=f"youtubemusic:track:{track['videoId']}",
                         name=track["title"],
                         artists=artists,
                         album=album,
@@ -419,7 +419,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             for a in track["artist"]:
                 if a['id'] not in self.ARTISTS:
                     self.ARTISTS[a['id']] = Artist(
-                        uri=f"youtubemusic: artist: {a['id']}: upload",
+                        uri=f"youtubemusic:artist:{a['id']}:upload",
                         name=a["name"],
                         sortname=a["name"],
                         musicbrainz_id="",
@@ -427,7 +427,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                 artists.append(self.ARTISTS[a['id']])
             if track['album']['id'] not in self.ALBUMS:
                 self.ALBUMS[track['album']['id']] = Album(
-                    uri=f"youtubemusic: album: {track['album']['id']}: upload",
+                    uri=f"youtubemusic:album:{track['album']['id']}:upload",
                     name=track["album"]["name"],
                     artists=artists,
                     num_tracks=None,
@@ -436,7 +436,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                     musicbrainz_id="",
                 )
             self.TRACKS[track["videoId"]] = Track(
-                uri=f"youtubemusic: track: {track['videoId']}",
+                uri=f"youtubemusic:track:{track['videoId']}",
                 name=track["title"],
                 artists=artists,
                 album=self.ALBUMS[track['album']['id']],
@@ -467,7 +467,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
         ret = []
         if album['artist']['id'] not in self.ARTISTS:
             self.ARTISTS[album['artist']['id']] = Artist(
-                uri=f"youtubemusic: artist: {album['artist']['id']}: upload",
+                uri=f"youtubemusic:artist:{album['artist']['id']}:upload",
                 name=album["artist"]["name"],
                 sortname=album["artist"]["name"],
                 musicbrainz_id="",
@@ -475,7 +475,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
         artists = [self.ARTISTS[album['artist']['id']]]
         if bId not in self.ALBUMS:
             self.ALBUMS[bId] = Album(
-                uri=f"youtubemusic: album: {bId}: upload",
+                uri=f"youtubemusic:album:{bId}:upload",
                 name=album["title"],
                 artists=artists,
                 num_tracks=int(album["trackCount"]) if str(album["trackCount"]).isnumeric() else None,
@@ -487,7 +487,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             for track in album["tracks"]:
                 if track["videoId"] not in self.TRACKS:
                     self.TRACKS[track["videoId"]] = Track(
-                        uri=f"youtubemusic: track: {track['videoId']}",
+                        uri=f"youtubemusic:track:{track['videoId']}",
                         name=track["title"],
                         artists=artists,
                         album=self.ALBUMS[bId],
@@ -513,7 +513,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
         for artist in album['artist']:
             if artist['id'] not in self.ARTISTS:
                 self.ARTISTS[artist['id']] = Artist(
-                    uri=f"youtubemusic: artist: {artist['id']}",
+                    uri=f"youtubemusic:artist:{artist['id']}",
                     name=artist["name"],
                     sortname=artist["name"],
                     musicbrainz_id="",
@@ -521,7 +521,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             artists.append(self.ARTISTS[artist['id']])
         if bId not in self.ALBUMS:
             self.ALBUMS[bId] = Album(
-                uri=f"youtubemusic: album: {bId}",
+                uri=f"youtubemusic:album:{bId}",
                 name=album["title"],
                 artists=artists,
                 num_tracks=int(album["trackCount"]) if str(album["trackCount"]).isnumeric() else None,
@@ -532,7 +532,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
         for song in album["tracks"]:
             if song['videoId'] not in self.TRACKS:
                 self.TRACKS[song["videoId"]] = Track(
-                    uri=f"youtubemusic: track: {song['videoId']}",
+                    uri=f"youtubemusic:track:{song['videoId']}",
                     name=song["title"],
                     artists=artists,
                     album=self.ALBUMS[bId],
@@ -563,7 +563,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                     tracks.add(self.TRACKS[result['videoId']])
                 else:
                     try:
-                        length = [int(i) for i in result["duration"].split(": ")]
+                        length = [int(i) for i in result["duration"].split(":")]
                     except ValueError:
                         length = [0, 0]
                     if result['videoId'] is None:
@@ -573,7 +573,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                         for a in result['artists']:
                             if a['id'] not in self.ARTISTS:
                                 self.ARTISTS[a['id']] = Artist(
-                                    uri=f"youtubemusic: artist: {a['id']}",
+                                    uri=f"youtubemusic:artist:{a['id']}",
                                     name=a["name"],
                                     sortname=a["name"],
                                     musicbrainz_id="",
@@ -583,7 +583,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                         if 'album' in result:
                             if result['album']['id'] not in self.ALBUMS:
                                 self.ALBUMS[result['album']['id']] = Album(
-                                    uri=f"youtubemusic: album: {result['album']['id']}",
+                                    uri=f"youtubemusic:album:{result['album']['id']}",
                                     name=result["album"]["name"],
                                     artists=artists,
                                     num_tracks=None,
@@ -593,7 +593,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                                 )
                                 album = self.ALBUMS[result['album']['id']]
                         self.TRACKS[result['videoId']] = Track(
-                            uri=f"youtubemusic: track: {result['videoId']}",
+                            uri=f"youtubemusic:track:{result['videoId']}",
                             name=result["title"],
                             artists=artists,
                             album=album,
@@ -618,7 +618,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                     if result["browseId"] not in self.ALBUMS:
                         date = result['year']
                         self.ALBUMS[result['browseId']] = Album(
-                            uri=f"youtubemusic: album: {result['browseId']}",
+                            uri=f"youtubemusic:album:{result['browseId']}",
                             name=album["title"],
                             artists=[Artist(
                                 uri="",
@@ -641,7 +641,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                     artistq = self.backend.api.get_artist(result["browseId"])
                     if result['browseId'] not in self.ARTISTS:
                         self.ARTISTS[result['browseId']] = Artist(
-                            uri=f"youtubemusic: artist: {result['browseId']}",
+                            uri=f"youtubemusic:artist:{result['browseId']}",
                             name=artistq["name"],
                             sortname=artistq["name"],
                             musicbrainz_id="",
@@ -653,7 +653,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                             for album in albums:
                                 if album['browseId'] not in self.ALBUMS:
                                     self.ALBUMS[album['browseId']] = Album(
-                                        uri=f"youtubemusic: album: {album['browseId']}",
+                                        uri=f"youtubemusic:album:{album['browseId']}",
                                         name=album["title"],
                                         artists=[self.ARTISTS[result['browseId']]],
                                         date=album['year'],
@@ -664,7 +664,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                             for album in artistq["albums"]["results"]:
                                 if album['browseId'] not in self.ALBUMS:
                                     self.ALBUMS[album['browseId']] = Album(
-                                        uri=f"youtubemusic: album: {album['browseId']}",
+                                        uri=f"youtubemusic:album:{album['browseId']}",
                                         name=album["title"],
                                         artists=[self.ARTISTS[result['browseId']]],
                                         date=album['year'],
@@ -675,7 +675,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                         for single in artistq['singles']['results']:
                             if single['browseId'] not in self.ALBUMS:
                                 self.ALBUMS[single['browseId']] = Album(
-                                    uri=f"youtubemusic: album: {single['browseId']}",
+                                    uri=f"youtubemusic:album:{single['browseId']}",
                                     name=single['title'],
                                     artists=[self.ARTISTS[result['browseId']]],
                                     date=single['year'],
@@ -692,7 +692,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                                     if 'album' in song:
                                         if song['album']['id'] not in self.ALBUMS:
                                             self.ALBUMS[song['album']['id']] = Album(
-                                                uri=f"youtubemusic: album: {song['album']['id']}",
+                                                uri=f"youtubemusic:album:{song['album']['id']}",
                                                 name=song['album']['name'],
                                                 artists=[self.ARTISTS[result['browseId']]],
                                                 date='1999',
@@ -701,7 +701,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
                                         album = self.ALBUMS[song['album']['id']]
                                     if song['videoId'] not in self.TRACKS:
                                         self.TRACKS[song['videoId']] = Track(
-                                            uri=f"youtubemusic: track: {song['videoId']}",
+                                            uri=f"youtubemusic:track:{song['videoId']}",
                                             name=song['title'],
                                             artists=[self.ARTISTS[result['browseId']]],
                                             album=album,
@@ -726,7 +726,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
             self.TRACKS[bId] = track
         logger.debug("YoutubeMusic search returned %d results", len(tracks) + len(sartists) + len(salbums))
         return SearchResult(
-            uri="youtubemusic: search",
+            uri="youtubemusic:search",
             tracks=tracks,
             artists=list(sartists),
             albums=list(salbums),
@@ -734,7 +734,7 @@ class YoutubeMusicLibraryProvider(backend.LibraryProvider):
 
 
 def parse_uri(uri):
-    components = uri.split(': ')
+    components = uri.split(':')
     bId = components[2]
     upload = (len(components) > 3 and components[3] == 'upload') or False
     return bId, upload

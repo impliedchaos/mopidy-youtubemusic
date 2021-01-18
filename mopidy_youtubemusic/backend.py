@@ -83,8 +83,8 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
 
     def _get_youtube_player(self):
         # Refresh our js player URL so YDL can decode the signature correctly.
-        response = requests.get('https: //music.youtube.com', headers=self.api.headers, proxies=self.api.proxies)
-        m = re.search(r'jsUrl"\s*: \s*"([^"]+)"', response.text)
+        response = requests.get('https://music.youtube.com', headers=self.api.headers, proxies=self.api.proxies)
+        m = re.search(r'jsUrl"\s*:\s*"([^"]+)"', response.text)
         if m:
             url = m.group(1)
             logger.debug('YoutubeMusic updated player URL to %s', url)
@@ -122,7 +122,7 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
     def scrobble_track(self, bId):
         # Called through YoutubeMusicScrobbleListener
         # Let YouTube Music know we're playing this track so it will be added to our history.
-        endpoint = "https: //www.youtube.com/get_video_info"
+        endpoint = "https://www.youtube.com/get_video_info"
         params = {"video_id": bId, "hl": self.api.language, "el": "detailpage", "c": "WEB_REMIX", "cver": "0.1"}
         response = requests.get(endpoint, params, headers=self.api.headers, proxies=self.api.proxies)
         text = parse_qs(response.text)
@@ -131,7 +131,7 @@ class YoutubeMusicBackend(pykka.ThreadingActor, backend.Backend, YoutubeMusicScr
         CPN_ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_'
         params = {
             'cpn': ''.join((CPN_ALPHABET[random.randint(0, 256) & 63] for _ in range(0, 16))),
-            'referrer': "https: //music.youtube.com",
+            'referrer': "https://music.youtube.com",
             'cbr': text['cbr'][0],
             'cbrver': text['cbrver'][0],
             'c': text['c'][0],
