@@ -1,3 +1,5 @@
+All of this has been merged back into the original `Mopidy-YTMusic <https://github.com/OzymandiasTheGreat/mopidy-ytmusic>`_.  YAY!  This is now archived and not worth anyone's time.
+
 ****************************
 Mopidy-YoutubeMusic
 ****************************
